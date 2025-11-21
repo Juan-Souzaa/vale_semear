@@ -624,6 +624,7 @@
                 <div class="header-actions">
                     @yield('header-actions')
                     
+                    @auth
                     <button class="notification-btn" title="Notificações" data-bs-toggle="modal" data-bs-target="#notificacoesModal">
                         <i class="bi bi-bell"></i>
                         <span class="notification-label" id="notification-count">0</span>
@@ -647,6 +648,7 @@
                             </li>
                         </ul>
                     </div>
+                    @endauth
                 </div>
             </header>
 
@@ -663,6 +665,7 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    @auth
     <!-- Modal de Notificações -->
     <div class="modal fade" id="notificacoesModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -681,97 +684,10 @@
             </div>
         </div>
     </div>
+    @endauth
 
     <!-- Custom JavaScript -->
     <script>
-        // Carregar notificações ao abrir modal
-        document.getElementById('notificacoesModal')?.addEventListener('show.bs.modal', function() {
-            const content = document.getElementById('notificacoes-content');
-            if (content) {
-                content.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
-            }
-            
-            fetch('{{ route("dashboard.notificacoes") }}', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro na resposta: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const count = document.getElementById('notification-count');
-                    
-                    if (count) {
-                        const total = data.total || 0;
-                        count.textContent = total > 99 ? '99+' : total;
-                        count.style.display = total > 0 ? 'flex' : 'none';
-                    }
-                    
-                    if (content) {
-                        if (data.notificacoes && data.notificacoes.length > 0) {
-                            let html = '';
-                            data.notificacoes.forEach(notif => {
-                                html += `
-                                    <div class="alert alert-${notif.tipo} alert-dismissible fade show" role="alert">
-                                        <strong>${notif.titulo}</strong>
-                                        <p class="mb-0 small">${notif.mensagem}</p>
-                                        ${notif.link ? `<a href="${notif.link}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalhes</a>` : ''}
-                                    </div>
-                                `;
-                            });
-                            content.innerHTML = html;
-                        } else {
-                            content.innerHTML = '<p class="text-muted text-center py-4">Nenhuma notificação no momento.</p>';
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar notificações:', error);
-                    if (content) {
-                        content.innerHTML = '<p class="text-danger text-center py-4">Erro ao carregar notificações. Por favor, recarregue a página.</p>';
-                    }
-                });
-        });
-
-        // Carregar contador de notificações ao carregar página
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('{{ route("dashboard.notificacoes") }}', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erro na resposta: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const count = document.getElementById('notification-count');
-                    if (count) {
-                        const total = data.total || 0;
-                        count.textContent = total > 99 ? '99+' : total;
-                        count.style.display = total > 0 ? 'flex' : 'none';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao carregar contador:', error);
-                    const count = document.getElementById('notification-count');
-                    if (count) {
-                        count.style.display = 'none';
-                    }
-                });
-        });
 
         // Auto-hide alerts
         setTimeout(function() {
@@ -809,6 +725,105 @@
             }
         }
     </script>
+
+    @auth
+    @push('scripts')
+    <script>
+        // Carregar notificações ao abrir modal
+        const notificacoesModal = document.getElementById('notificacoesModal');
+        if (notificacoesModal) {
+            notificacoesModal.addEventListener('show.bs.modal', function() {
+                const content = document.getElementById('notificacoes-content');
+                if (content) {
+                    content.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
+                }
+                
+                fetch('{{ route("dashboard.notificacoes") }}', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro na resposta: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const count = document.getElementById('notification-count');
+                        
+                        if (count) {
+                            const total = data.total || 0;
+                            count.textContent = total > 99 ? '99+' : total;
+                            count.style.display = total > 0 ? 'flex' : 'none';
+                        }
+                        
+                        if (content) {
+                            if (data.notificacoes && data.notificacoes.length > 0) {
+                                let html = '';
+                                data.notificacoes.forEach(notif => {
+                                    html += `
+                                        <div class="alert alert-${notif.tipo} alert-dismissible fade show" role="alert">
+                                            <strong>${notif.titulo}</strong>
+                                            <p class="mb-0 small">${notif.mensagem}</p>
+                                            ${notif.link ? `<a href="${notif.link}" class="btn btn-sm btn-outline-primary mt-2">Ver Detalhes</a>` : ''}
+                                        </div>
+                                    `;
+                                });
+                                content.innerHTML = html;
+                            } else {
+                                content.innerHTML = '<p class="text-muted text-center py-4">Nenhuma notificação no momento.</p>';
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao carregar notificações:', error);
+                        if (content) {
+                            content.innerHTML = '<p class="text-danger text-center py-4">Erro ao carregar notificações. Por favor, recarregue a página.</p>';
+                        }
+                    });
+            });
+        }
+
+        // Carregar contador de notificações ao carregar página
+        document.addEventListener('DOMContentLoaded', function() {
+            const count = document.getElementById('notification-count');
+            if (!count) return; // Se não existe, usuário não está autenticado
+            
+            fetch('{{ route("dashboard.notificacoes") }}', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro na resposta: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (count) {
+                        const total = data.total || 0;
+                        count.textContent = total > 99 ? '99+' : total;
+                        count.style.display = total > 0 ? 'flex' : 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar contador:', error);
+                    if (count) {
+                        count.style.display = 'none';
+                    }
+                });
+        });
+    </script>
+    @endpush
+    @endauth
 
     @stack('scripts')
 </body>
