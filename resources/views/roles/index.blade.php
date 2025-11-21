@@ -28,13 +28,13 @@
 @endif
 
 <div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-lg-7">
+        <div class="card h-100">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-people me-2"></i>Roles</h5>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
+            <div class="card-body d-flex flex-column">
+                <div class="table-responsive flex-grow-1">
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -71,12 +71,12 @@
                                         @endif
                                         @if(auth()->user()->hasPermissionTo('permissoes.delete'))
                                         @if($role->name !== 'Super Admin')
-                                        <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta role?');">
+                                        <button type="button" class="btn btn-outline-danger btnDeleteRole" data-role-id="{{ $role->id }}" title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <form id="deleteRoleForm{{ $role->id }}" action="{{ route('roles.destroy', $role) }}" method="POST" style="display: none;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger" title="Excluir">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
                                         </form>
                                         @endif
                                         @endif
@@ -94,13 +94,13 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
+    <div class="col-lg-5">
+        <div class="card h-100">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>Permissões</h5>
             </div>
-            <div class="card-body">
-                <div class="list-group">
+            <div class="card-body d-flex flex-column">
+                <div class="list-group flex-grow-1" style="overflow-y: auto;">
                     @foreach($permissions as $resource => $perms)
                     <div class="list-group-item">
                         <h6 class="mb-2 text-capitalize">{{ $resource }}</h6>
@@ -175,4 +175,35 @@
 </div>
 @endif
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.btnDeleteRole');
+    
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const roleId = this.getAttribute('data-role-id');
+            const deleteForm = document.getElementById('deleteRoleForm' + roleId);
+            
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: 'Esta ação não pode ser desfeita!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteForm.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush
 
