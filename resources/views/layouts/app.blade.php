@@ -167,7 +167,7 @@
             backdrop-filter: saturate(150%) blur(4px);
             width: 100%;
             box-sizing: border-box;
-            overflow-x: hidden;
+            overflow: visible;
         }
 
         .header-title {
@@ -201,6 +201,8 @@
             gap: 1rem;
             flex-shrink: 0;
             flex-wrap: wrap;
+            position: relative;
+            overflow: visible;
         }
 
         .sidebar-toggle {
@@ -246,6 +248,17 @@
             border-radius: 0.5rem;
             transition: all 0.2s, transform .1s;
             position: relative;
+        }
+
+        /* Dropdown fix */
+        .header-actions .dropdown {
+            position: relative;
+        }
+
+        .header-actions .dropdown-menu {
+            z-index: 1050;
+            position: absolute;
+            margin-top: 0.5rem;
         }
 
         .notification-btn:hover, .profile-btn:hover {
