@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -81,5 +82,21 @@ class User extends Authenticatable
     public function relatoriosGerados()
     {
         return $this->hasMany(Relatorio::class, 'gerado_por_id');
+    }
+
+    /**
+     * Verifica se o usuário é Super Admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('Super Admin');
+    }
+
+    /**
+     * Verifica se o usuário pode gerenciar permissões
+     */
+    public function canManagePermissions(): bool
+    {
+        return $this->isSuperAdmin() || $this->hasPermissionTo('permissoes.manage');
     }
 }
