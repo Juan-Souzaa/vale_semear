@@ -20,15 +20,15 @@ class DatabaseTestSeeder extends Seeder
      */
     public function run(): void
     {
-        // Criar usuários
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@semear.com'],
-            [
-                'name' => 'Administrador',
-                'password' => Hash::make('12345678'),
-            ]
-        );
+        // Buscar admin já criado pelo AdminSeeder (não criar duplicado)
+        $admin = User::where('email', 'admin@semear.com')->first();
+        
+        if (!$admin) {
+            $this->command->warn('Admin não encontrado. Execute AdminSeeder primeiro!');
+            return;
+        }
 
+        // Criar usuários de teste
         $joao = User::firstOrCreate(
             ['email' => 'joao@semear.com'],
             [
@@ -60,6 +60,17 @@ class DatabaseTestSeeder extends Seeder
                 'password' => Hash::make('12345678'),
             ]
         );
+
+        // Atribuir role "Usuário" aos usuários de teste (se não tiverem role)
+        $roleUsuario = \Spatie\Permission\Models\Role::where('name', 'Usuário')->first();
+        
+        if ($roleUsuario) {
+            foreach ([$joao, $maria, $pedro, $ana] as $user) {
+                if (!$user->hasAnyRole()) {
+                    $user->assignRole($roleUsuario);
+                }
+            }
+        }
 
         $users = [$joao, $maria, $pedro, $ana];
         $allUsers = collect($users)->push($admin);
