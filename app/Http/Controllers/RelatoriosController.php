@@ -7,6 +7,7 @@ use App\Models\Reuniao;
 use App\Models\Relatorio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use League\Csv\Writer;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -16,6 +17,8 @@ class RelatoriosController extends Controller
 {
     public function index(Request $request)
     {
+        Gate::authorize('relatorios.view');
+        
         $periodoInicio = $request->get('periodo_inicio', now()->startOfMonth()->format('Y-m-d'));
         $periodoFim = $request->get('periodo_fim', now()->endOfMonth()->format('Y-m-d'));
         
@@ -66,6 +69,8 @@ class RelatoriosController extends Controller
 
     public function exportar(Request $request, $tipo, $formato)
     {
+        Gate::authorize('relatorios.export');
+        
         $periodoInicio = $request->get('periodo_inicio', now()->startOfMonth()->format('Y-m-d'));
         $periodoFim = $request->get('periodo_fim', now()->endOfMonth()->format('Y-m-d'));
         

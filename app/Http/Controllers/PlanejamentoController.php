@@ -11,6 +11,8 @@ class PlanejamentoController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Atividade::class);
+        
         $query = Atividade::with('responsavel');
         
         // Filtros
@@ -45,12 +47,16 @@ class PlanejamentoController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Atividade::class);
+        
         $usuarios = User::all();
         return view('planejamento.create', compact('usuarios'));
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Atividade::class);
+        
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -71,6 +77,8 @@ class PlanejamentoController extends Controller
 
     public function show(Atividade $planejamento)
     {
+        $this->authorize('view', $planejamento);
+        
         $atividade = $planejamento;
         $atividade->load('responsavel');
         return view('planejamento.show', compact('atividade'));
@@ -78,6 +86,8 @@ class PlanejamentoController extends Controller
 
     public function edit(Atividade $planejamento)
     {
+        $this->authorize('update', $planejamento);
+        
         $atividade = $planejamento;
         $usuarios = User::all();
         return view('planejamento.edit', compact('atividade', 'usuarios'));
@@ -85,6 +95,8 @@ class PlanejamentoController extends Controller
 
     public function update(Request $request, Atividade $planejamento)
     {
+        $this->authorize('update', $planejamento);
+        
         $atividade = $planejamento;
         
         $validated = $request->validate([
@@ -107,6 +119,8 @@ class PlanejamentoController extends Controller
 
     public function destroy(Atividade $planejamento)
     {
+        $this->authorize('delete', $planejamento);
+        
         $atividade = $planejamento;
         $atividade->delete();
         return redirect()->route('planejamento.index')->with('success', 'Atividade excluída com sucesso!');

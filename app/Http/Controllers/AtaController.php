@@ -11,11 +11,15 @@ class AtaController extends Controller
 {
     public function create(Reuniao $reuniao)
     {
+        $this->authorize('create', Ata::class);
+        
         return view('atas.create', compact('reuniao'));
     }
 
     public function store(Request $request, Reuniao $reuniao)
     {
+        $this->authorize('create', Ata::class);
+        
         $validated = $request->validate([
             'numero' => 'nullable|string|max:255',
             'conteudo' => 'required|string',
@@ -34,18 +38,24 @@ class AtaController extends Controller
 
     public function show(Ata $ata)
     {
+        $this->authorize('view', $ata);
+        
         $ata->load(['reuniao', 'criadoPor', 'decisoes']);
         return view('atas.show', compact('ata'));
     }
 
     public function edit(Ata $ata)
     {
+        $this->authorize('update', $ata);
+        
         $ata->load(['reuniao']);
         return view('atas.edit', compact('ata'));
     }
 
     public function update(Request $request, Ata $ata)
     {
+        $this->authorize('update', $ata);
+        
         $validated = $request->validate([
             'numero' => 'nullable|string|max:255',
             'conteudo' => 'required|string',
@@ -67,6 +77,8 @@ class AtaController extends Controller
 
     public function aprovar(Ata $ata)
     {
+        $this->authorize('approve', $ata);
+        
         $ata->update([
             'aprovada' => true,
             'data_aprovacao' => now(),

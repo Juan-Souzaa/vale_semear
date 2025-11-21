@@ -13,6 +13,8 @@ class ReunioesController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Reuniao::class);
+        
         $query = Reuniao::with(['organizador', 'participantes.user', 'lembretes']);
         
         if ($request->filled('status')) {
@@ -38,12 +40,16 @@ class ReunioesController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Reuniao::class);
+        
         $usuarios = User::all();
         return view('reunioes.create', compact('usuarios'));
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Reuniao::class);
+        
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -76,6 +82,8 @@ class ReunioesController extends Controller
 
     public function show(Reuniao $reuniao)
     {
+        $this->authorize('view', $reuniao);
+        
         $reuniao->load(['organizador', 'participantes.user', 'atas', 'decisoes', 'lembretes']);
         $usuarios = User::all();
         return view('reunioes.show', compact('reuniao', 'usuarios'));
@@ -83,6 +91,8 @@ class ReunioesController extends Controller
 
     public function edit(Reuniao $reuniao)
     {
+        $this->authorize('update', $reuniao);
+        
         $usuarios = User::all();
         $participantesIds = $reuniao->participantes->pluck('user_id')->toArray();
         return view('reunioes.edit', compact('reuniao', 'usuarios', 'participantesIds'));
@@ -90,6 +100,8 @@ class ReunioesController extends Controller
 
     public function update(Request $request, Reuniao $reuniao)
     {
+        $this->authorize('update', $reuniao);
+        
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -135,6 +147,8 @@ class ReunioesController extends Controller
 
     public function destroy(Reuniao $reuniao)
     {
+        $this->authorize('delete', $reuniao);
+        
         $reuniao->delete();
         return redirect()->route('reunioes.index')->with('success', 'Reunião excluída com sucesso!');
     }

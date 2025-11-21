@@ -10,6 +10,8 @@ class ObrigacaoController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Obrigacao::class);
+        
         $query = Obrigacao::with('responsavel');
         
         if ($request->filled('busca')) {
@@ -32,12 +34,16 @@ class ObrigacaoController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Obrigacao::class);
+        
         $usuarios = User::all();
         return view('obrigacoes.create', compact('usuarios'));
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Obrigacao::class);
+        
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -56,18 +62,24 @@ class ObrigacaoController extends Controller
 
     public function show(Obrigacao $obrigacao)
     {
+        $this->authorize('view', $obrigacao);
+        
         $obrigacao->load('responsavel');
         return view('obrigacoes.show', compact('obrigacao'));
     }
 
     public function edit(Obrigacao $obrigacao)
     {
+        $this->authorize('update', $obrigacao);
+        
         $usuarios = User::all();
         return view('obrigacoes.edit', compact('obrigacao', 'usuarios'));
     }
 
     public function update(Request $request, Obrigacao $obrigacao)
     {
+        $this->authorize('update', $obrigacao);
+        
         $validated = $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'nullable|string',
@@ -86,6 +98,8 @@ class ObrigacaoController extends Controller
 
     public function destroy(Obrigacao $obrigacao)
     {
+        $this->authorize('delete', $obrigacao);
+        
         $obrigacao->delete();
         return redirect()->route('obrigacoes.index')->with('success', 'Obrigação excluída com sucesso!');
     }

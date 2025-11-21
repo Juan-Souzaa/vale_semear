@@ -11,6 +11,8 @@ class DecisaoController extends Controller
 {
     public function create(Reuniao $reuniao)
     {
+        $this->authorize('create', Decisao::class);
+        
         $usuarios = User::all();
         $atas = $reuniao->atas;
         return view('decisoes.create', compact('reuniao', 'usuarios', 'atas'));
@@ -18,6 +20,8 @@ class DecisaoController extends Controller
 
     public function store(Request $request, Reuniao $reuniao)
     {
+        $this->authorize('create', Decisao::class);
+        
         $validated = $request->validate([
             'ata_id' => 'nullable|exists:atas,id',
             'titulo' => 'required|string|max:255',
@@ -36,12 +40,16 @@ class DecisaoController extends Controller
 
     public function show(Decisao $decisao)
     {
+        $this->authorize('view', $decisao);
+        
         $decisao->load(['reuniao', 'ata', 'responsavel', 'tarefas']);
         return view('decisoes.show', compact('decisao'));
     }
 
     public function edit(Decisao $decisao)
     {
+        $this->authorize('update', $decisao);
+        
         $usuarios = User::all();
         $atas = $decisao->reuniao->atas;
         return view('decisoes.edit', compact('decisao', 'usuarios', 'atas'));
@@ -49,6 +57,8 @@ class DecisaoController extends Controller
 
     public function update(Request $request, Decisao $decisao)
     {
+        $this->authorize('update', $decisao);
+        
         $validated = $request->validate([
             'ata_id' => 'nullable|exists:atas,id',
             'titulo' => 'required|string|max:255',
@@ -65,6 +75,8 @@ class DecisaoController extends Controller
 
     public function destroy(Decisao $decisao)
     {
+        $this->authorize('delete', $decisao);
+        
         $decisao->delete();
         return redirect()->back()->with('success', 'Decisão excluída com sucesso!');
     }
