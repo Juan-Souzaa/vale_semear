@@ -8,8 +8,9 @@
 <div class="row">
     <div class="col-lg-8 mx-auto">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-pencil me-2"></i>Editar Role: {{ $role->name }}</h5>
+                @include('components.help-icon', ['key' => 'roles.edit'])
             </div>
             <div class="card-body">
                 <form action="{{ route('roles.update', $role) }}" method="POST">

@@ -5,6 +5,7 @@
 @section('page-subtitle', 'Geração de relatórios com dados das atividades realizadas')
 
 @section('header-actions')
+@include('components.help-icon', ['key' => 'relatorios.index'])
 @endsection
 
 @section('content')

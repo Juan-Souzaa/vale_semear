@@ -4,6 +4,10 @@
 @section('page-title', 'Dashboard')
 @section('page-subtitle', 'Visão geral das atividades da associação')
 
+@section('header-actions')
+@include('components.help-icon', ['key' => 'dashboard'])
+@endsection
+
 @section('content')
 <!-- Métricas Principais -->
 <div class="row g-4 mb-5">

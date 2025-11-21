@@ -6,11 +6,14 @@
 <div class="row">
     <div class="col-lg-8 mx-auto">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0">
-                    <i class="bi bi-check-circle me-2"></i>Criar Decisão
-                </h1>
-                <p class="text-muted">Criar decisão para: {{ $reuniao->titulo }}</p>
+            <div class="d-flex align-items-center gap-2">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-check-circle me-2"></i>Criar Decisão
+                    </h1>
+                    <p class="text-muted">Criar decisão para: {{ $reuniao->titulo }}</p>
+                </div>
+                @include('components.help-icon', ['key' => 'decisoes.create'])
             </div>
             <a href="{{ route('reunioes.show', $reuniao) }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Voltar

@@ -5,9 +5,12 @@
 @section('page-subtitle', 'Gestão de obrigações e compromissos da associação')
 
 @section('header-actions')
-<a href="{{ route('obrigacoes.create') }}" class="btn btn-primary me-2">
-    <i class="bi bi-plus-lg me-2"></i>Nova Obrigação
-</a>
+<div class="d-flex align-items-center gap-2">
+    @include('components.help-icon', ['key' => 'obrigacoes.index'])
+    <a href="{{ route('obrigacoes.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Nova Obrigação
+    </a>
+</div>
 @endsection
 
 @section('content')

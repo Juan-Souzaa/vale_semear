@@ -5,9 +5,12 @@
 @section('page-subtitle', 'Centralização do planejamento e gestão das atividades')
 
 @section('header-actions')
-<a href="{{ route('planejamento.create') }}" class="btn btn-primary me-2">
-    <i class="bi bi-plus-lg me-2"></i>Nova Atividade
-</a>
+<div class="d-flex align-items-center gap-2">
+    @include('components.help-icon', ['key' => 'atividades.index'])
+    <a href="{{ route('planejamento.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Nova Atividade
+    </a>
+</div>
 @endsection
 
 @section('content')

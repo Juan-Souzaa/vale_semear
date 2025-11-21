@@ -5,11 +5,14 @@
 @section('page-subtitle', 'Gerenciar roles e permissões do sistema')
 
 @section('header-actions')
-@if(auth()->user()->hasPermissionTo('permissoes.manage'))
-<a href="{{ route('roles.create') }}" class="btn btn-primary">
-    <i class="bi bi-plus-lg me-2"></i>Nova Role
-</a>
-@endif
+<div class="d-flex align-items-center gap-2">
+    @include('components.help-icon', ['key' => 'roles.index'])
+    @if(auth()->user()->hasPermissionTo('permissoes.manage'))
+    <a href="{{ route('roles.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Nova Role
+    </a>
+    @endif
+</div>
 @endsection
 
 @section('content')

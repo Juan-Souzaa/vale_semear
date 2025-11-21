@@ -4,6 +4,10 @@
 @section('page-title', 'Gerenciar Permissões: ' . $user->name)
 @section('page-subtitle', 'Atribuir roles e permissões ao usuário')
 
+@section('header-actions')
+@include('components.help-icon', ['key' => 'users.roles'])
+@endsection
+
 @section('content')
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">

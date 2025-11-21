@@ -15,6 +15,7 @@ use App\Http\Controllers\DecisaoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\HelpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,9 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
     Route::get('/relatorios/exportar/{tipo}/{formato}', [RelatoriosController::class, 'exportar'])->name('relatorios.exportar');
+    
+    // Rota de Ajuda
+    Route::get('/help/{key}', [HelpController::class, 'show'])->name('help.show');
     
     // Rotas de Permissões e Roles (protegidas por permissões)
     Route::middleware('permission:permissoes.view')->group(function () {

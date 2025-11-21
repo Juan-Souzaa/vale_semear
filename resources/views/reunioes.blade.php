@@ -5,9 +5,12 @@
 @section('page-subtitle', 'Agenda, convites, atas e decisões')
 
 @section('header-actions')
-<a href="{{ route('reunioes.create') }}" class="btn btn-primary">
-    <i class="bi bi-plus-lg me-2"></i>Nova Reunião
-</a>
+<div class="d-flex align-items-center gap-2">
+    @include('components.help-icon', ['key' => 'reunioes.index'])
+    <a href="{{ route('reunioes.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Nova Reunião
+    </a>
+</div>
 @endsection
 
 @section('content')

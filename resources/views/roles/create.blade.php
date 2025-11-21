@@ -8,8 +8,9 @@
 <div class="row">
     <div class="col-lg-8 mx-auto">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Nova Role</h5>
+                @include('components.help-icon', ['key' => 'roles.create'])
             </div>
             <div class="card-body">
                 <form action="{{ route('roles.store') }}" method="POST">

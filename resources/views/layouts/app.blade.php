@@ -847,5 +847,96 @@
     @endauth
 
     @stack('scripts')
+
+    <!-- Modal de Ajuda -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">
+                        <i class="bi bi-question-circle me-2"></i>Ajuda
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body" id="helpModalBody">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para Sistema de Ajuda -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const helpModalElement = document.getElementById('helpModal');
+            if (!helpModalElement) {
+                console.error('Modal de ajuda não encontrado');
+                return;
+            }
+
+            const helpModal = new bootstrap.Modal(helpModalElement);
+            const helpModalTitle = document.getElementById('helpModalLabel');
+            const helpModalBody = document.getElementById('helpModalBody');
+
+            // Usar delegação de eventos para capturar cliques em botões de ajuda
+            document.addEventListener('click', function(e) {
+                const helpButton = e.target.closest('.help-icon-btn');
+                if (!helpButton) return;
+
+                e.preventDefault();
+                const helpKey = helpButton.getAttribute('data-help-key');
+                
+                if (!helpKey) {
+                    return;
+                }
+
+                // Mostrar loading
+                helpModalTitle.innerHTML = '<i class="bi bi-question-circle me-2"></i>Carregando...';
+                helpModalBody.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
+                helpModal.show();
+
+                // Buscar conteúdo de ajuda
+                fetch(`/help/${encodeURIComponent(helpKey)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.error || `Erro ${response.status}: ${response.statusText}`);
+                        }).catch(() => {
+                            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    helpModalTitle.innerHTML = `<i class="bi bi-${data.icon || 'question-circle'} me-2"></i>${data.title || 'Ajuda'}`;
+                    helpModalBody.innerHTML = data.content || '<p>Conteúdo de ajuda não disponível.</p>';
+                })
+                .catch(error => {
+                    helpModalTitle.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erro';
+                    helpModalBody.innerHTML = `<div class="alert alert-danger">
+                        <p><strong>Erro:</strong> ${error.message || 'Não foi possível carregar o conteúdo de ajuda. Por favor, tente novamente.'}</p>
+                    </div>`;
+                });
+            });
+        });
+    </script>
 </body>
 </html>

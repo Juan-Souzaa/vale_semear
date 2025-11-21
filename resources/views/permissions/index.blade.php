@@ -5,7 +5,7 @@
 @section('page-subtitle', 'Gerenciar permissões do sistema')
 
 @section('header-actions')
-{{-- Criação de novas permissões desabilitada - permissões devem ser criadas via seeder --}}
+@include('components.help-icon', ['key' => 'permissions.index'])
 @endsection
 
 @section('content')
