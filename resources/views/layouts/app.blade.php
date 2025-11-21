@@ -619,6 +619,14 @@
                         Relatórios
                     </a>
                 </div>
+                @if(auth()->check() && auth()->user()->can('permissoes.view'))
+                <div class="nav-item">
+                    <a href="{{ route('roles.index') }}" class="nav-link {{ request()->routeIs('roles.*') || request()->routeIs('permissions.*') ? 'active' : '' }}">
+                        <i class="bi bi-shield-lock"></i>
+                        Permissões
+                    </a>
+                </div>
+                @endif
             </nav>
         </aside>
 

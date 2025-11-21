@@ -58,6 +58,16 @@ class RouteServiceProvider extends ServiceProvider
             return \App\Models\Obrigacao::findOrFail($value);
         });
 
+        // Route Model Binding para role
+        Route::bind('role', function ($value) {
+            return \Spatie\Permission\Models\Role::findOrFail($value);
+        });
+
+        // Route Model Binding para permission
+        Route::bind('permission', function ($value) {
+            return \Spatie\Permission\Models\Permission::findOrFail($value);
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

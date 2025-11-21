@@ -12,6 +12,9 @@ use App\Http\Controllers\RelatoriosController;
 use App\Http\Controllers\AtaController;
 use App\Http\Controllers\ObrigacaoController;
 use App\Http\Controllers\DecisaoController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\UserRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,4 +82,13 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/relatorios', [RelatoriosController::class, 'index'])->name('relatorios');
     Route::get('/relatorios/exportar/{tipo}/{formato}', [RelatoriosController::class, 'exportar'])->name('relatorios.exportar');
+    
+    // Rotas de Permissões e Roles (protegidas por permissões)
+    Route::middleware('permission:permissoes.view')->group(function () {
+        Route::resource('roles', RoleController::class);
+        Route::resource('permissions', PermissionController::class)->only(['index']);
+        Route::get('/users/{user}/roles', [UserRoleController::class, 'show'])->name('users.roles');
+        Route::post('/users/{user}/roles/assign', [UserRoleController::class, 'assignRoles'])->name('users.roles.assign');
+        Route::post('/users/{user}/permissions/assign', [UserRoleController::class, 'assignPermissions'])->name('users.permissions.assign');
+    });
 });
