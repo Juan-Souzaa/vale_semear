@@ -57,10 +57,15 @@ php artisan key:generate
 php artisan migrate
 ```
 
-7. (Opcional) Execute o seeder para dados de teste:
+7. Execute o seeder para criar permissões, usuário admin e dados iniciais:
 ```bash
-php artisan db:seed --class=DatabaseTestSeeder
+php artisan db:seed
 ```
+
+   Isso criará:
+   - Todas as permissões do sistema
+   - Usuário administrador (email: admin@semear.com, senha: admin123)
+   - Dados de teste (opcional)
 
 8. Inicie o servidor de desenvolvimento:
 ```bash
